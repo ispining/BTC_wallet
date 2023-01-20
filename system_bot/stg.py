@@ -10,8 +10,12 @@ def start_msg(chat_id):
     :param chat_id: Ай ди пользователя
     """
     k = kmarkup()
+    b = balance(chat_id)
+    if len(str(b).split(".")) != 1:
+        b = round(b, 2)
+
     msg = texts.start_msg.format(**{
-        "balance": str(balance(chat_id))[:len(str(balance(chat_id))) - 2],
+        "balance": str(b),
         "wallet_id": str(WifUser(user_id=chat_id).get()[2]),
         "fake_peoples_num": str(settings("fake_peoples_num"))
     })
@@ -55,3 +59,16 @@ def change_wallet_id(chat_id):
     WifUser(user_id=chat_id).set(set_column="wallet_id", set_value=str(random.randint(int("1"*10), int("9"*10))))
     start_msg(chat_id)
 
+
+
+def admin_panel(chat_id):
+    k = kmarkup()
+    b = balance("admin")
+    if len(str(b).split(".")) != 1:
+        b = round(b, 2)
+    msg = texts.admin_panel_msg.format(**{
+        "total_admin_balance": str(b),
+        "subs_num": str(subs_num())
+    })
+    k.row(back("home"))
+    send(chat_id, msg, reply_markup=k)

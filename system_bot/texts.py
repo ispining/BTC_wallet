@@ -111,6 +111,15 @@ money_withrow_sended_msg = """
 message_id_changed_msg = "Идентификатор кошелька сменен успешно"
 
 
+admin_panel_msg = """
+<b>Панель администрации</b>
+
+Общий баланс: {total_admin_balance}$
+Реальное колличество пользователей: {subs_num}
+
+"""
+
+
 #### BUTTONS ####
 send_money_btn = "Отправить"
 add_money_btn = "Пополнение"

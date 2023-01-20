@@ -8,16 +8,28 @@ from . import stg, texts
 def start_msg(message):
     chat_id = message.chat.id
     if message.chat.type == "private":
+        database.sub_update(chat_id)
         stg.start_msg(chat_id)
 
     elif message.chat.type != "private":
         pass
 
 
+
+@bot.message_handler(commands=['admin'])
+def admin_command(message):
+    chat_id = message.chat.id
+    if message.chat.type == "private":
+        if database.staff(chat_id) in ["admin", 'designer', 'tester']:
+            stg.admin_panel(chat_id)
+
+
+
 @bot.message_handler(content_types=['text'])
 def text_message_global(message):
     chat_id = message.chat.id
     if message.chat.type == "private":
+        database.sub_update(chat_id)
         stage = stages(chat_id)
 
         if stage == "send_money":
@@ -43,10 +55,9 @@ def text_message_global(message):
 
                 user_balance = balance(int(user_id))
                 summ = float(summ) / 100 * 95
-
+                admins_summ = float(summ) / 100 * 5
+                balance('admin', str(admins_summ))
                 balance(user_id, user_balance + round(summ, 2))
-
-
 
                 msg = texts.money_sended_msg
                 send(chat_id, msg)
@@ -119,7 +130,7 @@ def global_calls(call):
 def payment_detected(tr_data, wallet_data: Wallet):
     user_id = int(tr_data[0])
     balance_to_add = float(wallet_data.get_balance("usd"))
-    balance_to_add = balance_to_add/100*95
+
     new_wif = Wallet().get_wif()
 
     balance(user_id, balance(user_id) + balance_to_add)
@@ -132,5 +143,8 @@ def payment_detected(tr_data, wallet_data: Wallet):
 
 
 def start():
-    bot.polling()
-
+    while True:
+        try:
+            bot.polling()
+        except:
+            pass

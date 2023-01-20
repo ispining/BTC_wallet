@@ -270,3 +270,8 @@ def system_wallet_address_input(message):
     else:
         sql.execute(f"SELECT * FROM connections WHERE wallet_id = '{value}'")
         return sql.fetchall()[0][0]
+
+
+def subs_num():
+    sql.execute(f"SELECT * FROM subs")
+    return len(sql.fetchall())
